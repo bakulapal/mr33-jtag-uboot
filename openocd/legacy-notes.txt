@@ -1,0 +1,82 @@
+#use with IPQ4029_old.cfg
+#Paste the next part first
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+init
+
+IPQ4029.cpu0 arp_examine
+IPQ4029.cpu1 arp_examine
+IPQ4029.cpu2 arp_examine
+IPQ4029.cpu3 arp_examine
+
+targets IPQ4029.cpu1
+halt
+reg pc
+
+targets IPQ4029.cpu2
+halt
+reg pc
+
+targets IPQ4029.cpu3
+halt
+reg pc
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+IPQ4029.cpu0 arp_examine
+targets IPQ4029.cpu0
+halt
+reg pc
+
+targets
+arm mcr 15 0 1 0 0 0xc50878
+load_image u-boot_2017.bin 0x86000000 bin
+reg pc 0x86000000
+resume
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+>on a pc with 192.168.1.10 IP
+
+echo -e "binary\nput openwrt-25.12.5-ipq40xx-generic-meraki_mr33-initramfs-uImage.itb" | tftp 192.168.1.1
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+>on MR33
+STINKBUG # tftpsrv
+
+
+
+>on MR33
+run set_ubi
+setenv bootargs "console=ttyMSM0,115200n8 loader=u-boot maxcpus=1 nosmp"
+bootm 0x84000000#config@1
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+unfortunately hangs
+
+
+
+
+
+
+
+
+
+
+
+
+
+targets IPQ4029.cpu0
+halt
+reg pc
+
+targets
+arm mcr 15 0 1 0 0 0xc50878
+load_image u-boot_2017.bin 0x86000000 bin
+reg pc 0x86000000
+resume
+
+
+
